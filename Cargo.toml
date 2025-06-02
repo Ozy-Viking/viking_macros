@@ -5,7 +5,8 @@ edition = "2024"
 licence = "MIT"
 description = "Helpful macros"
 repository = "https://github.com/Ozy-Viking/viking_macros"
-readme = "./README.md"
+readme = "README.md"
 keywords = ["macros", "enum"]
+authors = ["Zack Hankin <admin@hankin.io>"]
 
 [dependencies]
