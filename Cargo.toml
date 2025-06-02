@@ -2,7 +2,7 @@
 name = "viking_macros"
 version = "0.0.0"
 edition = "2024"
-licence = "MIT"
+license = "MIT"
 description = "Helpful macros"
 repository = "https://github.com/Ozy-Viking/viking_macros"
 readme = "README.md"
