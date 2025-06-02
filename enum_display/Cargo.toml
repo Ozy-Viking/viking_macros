@@ -1,6 +1,6 @@
 [package]
-name = "viking_macros"
-version = "0.1.0"
+name = "enum_display"
+version = "0.0.0"
 edition = "2024"
 license = "MIT"
 description = "Helpful macros"
@@ -9,6 +9,10 @@ readme = "README.md"
 keywords = ["macros", "enum"]
 authors = ["Zack Hankin <admin@hankin.io>"]
 
+[lib]
+proc-macro = true
 
 [dependencies]
-enum_display = {path = "enum_display"}
+proc-macro2 = "1.0"
+quote = "1.0"
+syn = { version = "2.0.101", features = ["full", "extra-traits"] }
