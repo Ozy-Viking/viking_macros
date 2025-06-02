@@ -11,4 +11,4 @@ authors = ["Zack Hankin <admin@hankin.io>"]
 
 
 [dependencies]
-enum_display = {path = "enum_display"}
+enum_display = {path = "enum_display", version="*"}
