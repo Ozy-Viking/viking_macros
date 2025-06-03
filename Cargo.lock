@@ -3,15 +3,6 @@
 version = 4
 
 [[package]]
-name = "enum_display"
-version = "0.0.0"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
 name = "proc-macro2"
 version = "1.0.95"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -50,5 +41,14 @@ checksum = "5a5f39404a5da50712a4c1eecf25e90dd62b613502b7e925fd4e4d19b5c96512"
 name = "viking_macros"
 version = "0.1.0"
 dependencies = [
- "enum_display",
+ "viking_macros_enum",
+]
+
+[[package]]
+name = "viking_macros_enum"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]

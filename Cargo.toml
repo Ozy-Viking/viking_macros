@@ -1,14 +1,28 @@
-[package]
-name = "viking_macros"
+[workspace]
+members = ["macros/*"]
+resolver = "3"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
 description = "Helpful macros"
 repository = "https://github.com/Ozy-Viking/viking_macros"
-readme = "README.md"
 keywords = ["macros", "enum"]
 authors = ["Zack Hankin <admin@hankin.io>"]
 
+[package]
+name = "viking_macros"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description.workspace = true
+repository.workspace = true
+readme.workspace = true
+keywords.workspace = true
+authors.workspace = true
+exclude = ["src/main.rs"]
+
 
 [dependencies]
-enum_display = {path = "enum_display", version="*"}
+viking_macros_enum = { version = "*", path = "macros/enum"}
