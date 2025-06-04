@@ -5,6 +5,9 @@
 ### Chores
 - update CHANGELOG.md
 - update CHANGELOG.md
+- update CHANGELOG.md
+### Documentation Improvements
+- Added badged for readme
 
 <a name="0.2.0"></a>
 ## [0.2.0] - 2025-06-04
