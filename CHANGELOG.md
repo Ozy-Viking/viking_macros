@@ -4,6 +4,7 @@
 ## [Upcoming Changes]
 ### Chores
 - update CHANGELOG.md
+- update CHANGELOG.md
 
 <a name="0.2.0"></a>
 ## [0.2.0] - 2025-06-04
