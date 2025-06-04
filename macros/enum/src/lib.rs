@@ -1,134 +1,115 @@
 #![doc = include_str!("../README.md")]
 extern crate proc_macro;
+use convert_case::{self, Casing};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
-use syn::{DeriveInput, Fields, parse_macro_input, spanned::Spanned};
+use syn::{parse_macro_input, spanned::Spanned, DeriveInput};
 
-macro_rules! modify_string {
-    (lowercase, $s:literal) => {
-        String::from($s).to_lowercase()
-    };
+use crate::convert_string::CaseType;
 
-    (uppercase, $s:literal) => {
-        String::from($s).to_uppercase()
-    };
-    (lowercase, $s:ident) => {
-        String::from($s).to_lowercase()
-    };
+mod convert_string;
 
-    (uppercase, $s:ident) => {
-        String::from($s).to_uppercase()
-    };
-
-    ($s:literal) => {
-        String::from($s)
-    };
-    ($s:ident) => {
-        String::from($s)
-    }; // ($i:ident $s:ident) => {{
-       //     dbg!($i);
-       //     dbg!($s);
-       //     compile_error!("Unsure");
-       // }};
-}
-
-#[derive(Debug, Default, PartialEq)]
-enum ModifyStringType {
-    #[default]
-    None,
-    Lowercase,
-    Uppercase,
-}
-
-/// Implements the 'Display' trait for enums. Enum must only use Unit items.
+/// Implements the [Display](std::fmt::Display) trait for enums. Using [convert_case] crate for the conversion.
 ///
-/// Optional helper attribute are available:
-/// - lowercase
-/// - uppercase
+/// Overall conversion can be applied to the Enum as a whole but can be overiden on specific enum
+/// members.
+///
+/// <div class="warning">The <code>#[Lower]</code> helper attribute adds spaces. Use <code>#[Flat]</code> instead for the equivilent of <code>"MyEnumMember".to_lowercase()</code>.</div>
+///
+/// | pattern | underscore `_` | hyphen `-` | empty string | space |
+/// | ---: | --- | --- | --- | --- |
+/// | [lowercase](convert_case::pattern::lowercase) | [snake_case](convert_case::Case::Snake) | [kebab-case](convert_case::Case::Kebab) | [flatcase](convert_case::Case::Flat) | [lower case](convert_case::Case::Lower) |
+/// | [uppercase](convert_case::pattern::uppercase) | [CONSTANT_CASE](convert_case::Case::Constant) | [COBOL-CASE](convert_case::Case::Cobol) | [UPPERFLATCASE](convert_case::Case::UpperFlat) | [UPPER CASE](convert_case::Case::Upper) |
+/// | [capital](convert_case::pattern::capital) | [Ada_Case](convert_case::Case::Ada) | [Train-Case](convert_case::Case::Train) | [PascalCase](convert_case::Case::Pascal) | [Title Case](convert_case::Case::Title) |
+/// | [camel](convert_case::pattern::camel) | | | [camelCase](convert_case::Case::Camel) |
+///
+/// Look at the documentation for [`Case`](convert_case::Case) for an explanation.
 ///
 /// ```rust
-/// use macros::EnumDisplay;
-///
+/// # use viking_macros_enum::EnumDisplay;
 /// #[derive(EnumDisplay)]
-/// #[lowercase]
+/// #[Flat]
 /// enum Orientation {
 ///    Horizontal,
+///    #[UpperFlat]
 ///    Vertical,
+///    #[None]
+///    ToTALLyRandDOmCaSe // Needs to remain as is for a completely legit reason ;)
 /// }
 /// ```
+///
 /// Is equivalent to:
 ///
 /// ```rust
+/// # enum Orientation {
+/// #   Horizontal,
+/// #   Vertical,
+/// #   ToTALLyRandDOmCaSe // Needs to remain as is for a completely legit reason ;)
+/// # }
+///
 /// impl std::fmt::Display for Orientation {
 ///     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
 ///         match self {
 ///             Orientation::Horizontal => write!(f, "horizontal"),
-///             Orientation::Vertical => write!(f, "vertical"),
+///             Orientation::Vertical => write!(f, "VERTICAL"),
+///             Orientation::ToTALLyRandDOmCaSe => write!(f, "ToTALLyRandDOmCaSe"),
 ///         }
 ///     }
 /// }
 /// ```
 ///
-/// ## Panics
-///
-/// ```compile_fail
-/// use macros::EnumDisplay;
-///
-/// #[derive(EnumDisplay)]
-/// enum Orientation {
-///     Horizontal(i64),
-///     Vertical { y: i64 },
-/// }
-/// ```
-#[proc_macro_derive(EnumDisplay, attributes(lowercase, uppercase))]
+#[proc_macro_derive(
+    EnumDisplay,
+    attributes(
+        Snake,
+        Constant,
+        UpperSnake,
+        Ada,
+        Kebab,
+        Cobol,
+        UpperKebab,
+        Train,
+        Flat,
+        UpperFlat,
+        Pascal,
+        UpperCamel,
+        Camel,
+        Lower,
+        Upper,
+        Title,
+        Sentence,
+        Alternating,
+        Toggle,
+        None
+    )
+)]
 pub fn derive_enum_display(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let DeriveInput {
         ident, data, attrs, ..
     } = input.clone();
-
-    let mut modification: ModifyStringType = ModifyStringType::None;
-    for attr in attrs {
-        let path_ident = match attr.meta.require_path_only() {
-            Ok(p) => p.get_ident(),
-            Err(_) => continue,
-        };
-        if let Some(i) = path_ident {
-            match i.to_string().as_str() {
-                "lowercase" => {
-                    modification = ModifyStringType::Lowercase;
-                }
-                "uppercase" => {
-                    modification = ModifyStringType::Uppercase;
-                }
-                e => {
-                    println!("Didn't add: {e}");
-                }
-            }
-        }
-    }
+    let transform = CaseType::from_attributes(attrs);
     let enum_data = match data {
         syn::Data::Enum(data_enum) => data_enum,
         _ => {
-            return token_stream_error(input.span(), "Must be of type 'enum'.");
+            return token_stream_error(input.span(), "Must be a enum.");
         }
     };
 
     let mut enum_items = Vec::new();
     for variant in enum_data.variants {
-        if variant.fields != Fields::Unit {
-            return token_stream_error(
-                variant.span(),
-                "Must be a unit type i.e. no EnumItemTuple | EnumItemStruct.\n enum Foo { Bar, Baz }",
-            );
-        }
+        // if variant.fields != Fields::Unit {
+        //     todo!("")
+        // }
+        let variant_transform = CaseType::from_attributes(variant.attrs);
         let variant_ident = &variant.ident;
-        let variant_string = variant_ident.to_string();
-        let val = match modification {
-            ModifyStringType::None => variant_string,
-            ModifyStringType::Lowercase => modify_string!(lowercase, variant_string),
-            ModifyStringType::Uppercase => modify_string!(uppercase, variant_string),
+        let val = if let Some(ct) = variant_transform {
+            variant_ident.to_string().to_case(ct.into())
+        } else if let Some(ct) = transform {
+            variant_ident.to_string().to_case(ct.into())
+        } else {
+            variant_ident.to_string()
         };
 
         let line_quote = quote! {
@@ -138,14 +119,13 @@ pub fn derive_enum_display(input: TokenStream) -> TokenStream {
     }
 
     quote! {
-    impl std::fmt::Display for #ident {
-        fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    impl ::std::fmt::Display for #ident {
+        fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
                 #(#enum_items),*
             }
         }
-    }
-            }
+    }}
     .into()
 }
 

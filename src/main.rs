@@ -1,12 +1,15 @@
 use viking_macros::EnumDisplay;
 
 fn main() {
-    println!("{}", Work::Yes);
+    println!("{}", Work::YesNo);
+    println!("{}", Work::NoYes);
 }
 
 #[derive(EnumDisplay)]
-#[uppercase]
+#[Cobol]
 enum Work {
-    Yes,
-    No,
+    #[Upper]
+    YesNo,
+    #[Ada]
+    NoYes,
 }
