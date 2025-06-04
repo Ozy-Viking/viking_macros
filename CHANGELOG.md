@@ -2,7 +2,10 @@
 
 <a name="Upcoming Changes"></a>
 ## [Upcoming Changes]
+### Bug Fixes
+- remove chore from gha and modify license badge
 ### Chores
+- update CHANGELOG.md
 - update CHANGELOG.md
 - update CHANGELOG.md
 - update CHANGELOG.md
