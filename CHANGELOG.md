@@ -1,6 +1,18 @@
 # Changelog
 
 
+<a name="0.3.3"></a>
+## [0.3.3] - 2025-07-13
+
+
+<a name="0.3.2"></a>
+## [0.3.2] - 2025-07-13
+
+
+<a name="0.3.1"></a>
+## [0.3.1] - 2025-07-13
+
+
 <a name="0.3.0"></a>
 ## [0.3.0] - 2025-07-13
 
@@ -54,7 +66,10 @@
 - Add .gitignore
 
 
-[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.0...HEAD
+[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.3...HEAD
+[0.3.3]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.2...0.3.3
+[0.3.2]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.1...0.3.2
+[0.3.1]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/Ozy-Viking/viking_macros/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/Ozy-Viking/viking_macros/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/Ozy-Viking/viking_macros/compare/0.1.0...0.1.1
