@@ -11,6 +11,8 @@
 - update CHANGELOG.md
 ### Documentation Improvements
 - Added badged for readme
+### Features
+- EnumVec added
 
 <a name="0.2.0"></a>
 ## [0.2.0] - 2025-06-04
