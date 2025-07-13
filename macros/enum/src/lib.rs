@@ -148,7 +148,7 @@ fn token_stream_error(span: Span, msg: &'static str) -> TokenStream {
 ///     NoTested,
 /// }
 ///
-/// impl viking_macros::EnumVec for Test {
+/// impl Test {
 ///        fn all_variants() -> Vec<Self> {
 ///                vec![Test::Compleded, Test::NoTested];
 ///        }
@@ -182,7 +182,7 @@ pub fn derive_enum_vec(input: TokenStream) -> TokenStream {
 
     let quoted = quote! {
         #[automatically_derived]
-        impl viking_macros::EnumVec for #ident {
+        impl #ident {
             fn all_variants() -> Vec<Self> {
                     vec![#(#enum_items),*]
             }
