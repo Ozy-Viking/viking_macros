@@ -1,7 +1,9 @@
 # Changelog
 
-<a name="Upcoming Changes"></a>
-## [Upcoming Changes]
+
+<a name="0.3.0"></a>
+## [0.3.0] - 2025-07-13
+
 ### Bug Fixes
 - remove chore from gha and modify license badge
 ### Chores
@@ -52,7 +54,8 @@
 - Add .gitignore
 
 
-[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.2.0...HEAD
+[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/Ozy-Viking/viking_macros/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/Ozy-Viking/viking_macros/compare/0.1.1...0.2.0
 [0.1.1]: https://github.com/Ozy-Viking/viking_macros/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/Ozy-Viking/viking_macros/compare/0.0.0...0.1.0
