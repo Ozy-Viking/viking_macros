@@ -7,4 +7,4 @@
 ## Available Derive Macros
 
 - [`EnumDisplay`]: Adds the Display trait to enums and can modify their string representation using helper attributes.
-- [`derive@EnumVec`]: Implements the trait [trait@EnumVec], by adding all enum variants to a [Vec].
+- [`EnumVec`]: Puts all variants in a [Vec].

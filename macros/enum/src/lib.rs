@@ -116,6 +116,7 @@ pub fn derive_enum_display(input: TokenStream) -> TokenStream {
     }
 
     quote! {
+    #[automatically_derived]
     impl ::std::fmt::Display for #ident {
         fn fmt(&self, f: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
             match self {
@@ -130,7 +131,7 @@ fn token_stream_error(span: Span, msg: &'static str) -> TokenStream {
     TokenStream::from(syn::Error::new(span, msg).into_compile_error())
 }
 
-/// Implements the trait [EnumVec](trait@viking_macros::EnumVec), by adding all enum variants to a [Vec].
+/// Puts all variants in a [Vec].
 ///
 /// ```no_run
 /// #[derive(EnumVec)]
@@ -149,9 +150,9 @@ fn token_stream_error(span: Span, msg: &'static str) -> TokenStream {
 /// }
 ///
 /// impl Test {
-///        fn all_variants() -> Vec<Self> {
-///                vec![Test::Compleded, Test::NoTested];
-///        }
+///    fn all_variants() -> Vec<Self> {
+///            vec![Test::Compleded, Test::NoTested];
+///    }
 /// }
 /// ```
 ///
