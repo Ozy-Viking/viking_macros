@@ -1,15 +1,11 @@
-use viking_macros::EnumDisplay;
+use viking_macros::EnumVec;
 
 fn main() {
-    println!("{}", Work::YesNo);
-    println!("{}", Work::NoYes);
+    println!("{:?}", Test::all_variants())
 }
 
-#[derive(EnumDisplay)]
-#[Cobol]
-enum Work {
-    #[Upper]
-    YesNo,
-    #[Ada]
-    NoYes,
+#[derive(Debug, EnumVec)]
+enum Test {
+    Compleded,
+    NoTested,
 }

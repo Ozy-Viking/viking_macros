@@ -4,7 +4,7 @@ use convert_case::{self, Casing};
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
-use syn::{parse_macro_input, spanned::Spanned, DeriveInput};
+use syn::{DeriveInput, Fields, parse_macro_input, spanned::Spanned};
 
 use crate::convert_string::CaseType;
 
@@ -99,9 +99,6 @@ pub fn derive_enum_display(input: TokenStream) -> TokenStream {
 
     let mut enum_items = Vec::new();
     for variant in enum_data.variants {
-        // if variant.fields != Fields::Unit {
-        //     todo!("")
-        // }
         let variant_transform = CaseType::from_attributes(variant.attrs);
         let variant_ident = &variant.ident;
         let val = if let Some(ct) = variant_transform {
@@ -131,4 +128,65 @@ pub fn derive_enum_display(input: TokenStream) -> TokenStream {
 
 fn token_stream_error(span: Span, msg: &'static str) -> TokenStream {
     TokenStream::from(syn::Error::new(span, msg).into_compile_error())
+}
+
+/// Implements the trait [EnumVec](trait@viking_macros::EnumVec), by adding all enum variants to a [Vec].
+///
+/// ```no_run
+/// #[derive(EnumVec)]
+/// enum Test {
+///     Compleded,
+///     NoTested,
+/// }
+/// ```
+///
+/// Will generate:
+///
+/// ```no_run
+/// enum Test {
+///     Compleded,
+///     NoTested,
+/// }
+///
+/// impl viking_macros::EnumVec for Test {
+///        fn all_variants() -> Vec<Self> {
+///                vec![Test::Compleded, Test::NoTested];
+///        }
+/// }
+/// ```
+///
+#[proc_macro_derive(EnumVec)]
+pub fn derive_enum_vec(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+    let DeriveInput { ident, data, .. } = input.clone();
+
+    let enum_data = match data {
+        syn::Data::Enum(data_enum) => data_enum,
+        _ => {
+            return token_stream_error(input.span(), "Must be of type 'enum'.");
+        }
+    };
+
+    let mut enum_items = Vec::new();
+    for variant in enum_data.variants {
+        if variant.fields != Fields::Unit {
+            return token_stream_error(
+                variant.span(),
+                "Must be a unit type i.e. no EnumItemTuple | EnumItemStruct.\n enum Foo { Bar, Baz }",
+            );
+        }
+        let variant_ident = &variant.ident;
+
+        enum_items.push(quote! {#ident::#variant_ident});
+    }
+
+    let quoted = quote! {
+        #[automatically_derived]
+        impl viking_macros::EnumVec for #ident {
+            fn all_variants() -> Vec<Self> {
+                    vec![#(#enum_items),*]
+            }
+        }
+    };
+    quoted.into()
 }
