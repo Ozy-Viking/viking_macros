@@ -3,6 +3,7 @@
 <a name="Upcoming Changes"></a>
 ## [Upcoming Changes]
 ### Bug Fixes
+- Added testing for all macros
 - Remove invalid test cases
 
 <a name="0.3.5"></a>
