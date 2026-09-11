@@ -8,3 +8,4 @@
 
 - [`EnumDisplay`]: Adds the Display trait to enums and can modify their string representation using helper attributes.
 - [`EnumVec`]: Puts all variants in a [Vec].
+- [`EnumAsStr`]: Adds a `const as_str()` method to enums, with optional case conversion using helper attributes.
