@@ -1,5 +1,9 @@
 # Changelog
 
+<a name="Upcoming Changes"></a>
+## [Upcoming Changes]
+### Bug Fixes
+- Remove invalid test cases
 
 <a name="0.3.5"></a>
 ## [0.3.5] - 2026-09-11
