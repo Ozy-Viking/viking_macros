@@ -31,14 +31,12 @@ pub enum CaseType {
     Upper,
     Title,
     Sentence,
-    Alternating,
-    Toggle,
     #[default]
     None,
 }
 
 impl CaseType {
-    pub fn all_cases() -> [CaseType; 20] {
+    pub fn all_cases() -> [CaseType; 18] {
         use CaseType as CT;
         [
             CT::Snake,
@@ -58,8 +56,6 @@ impl CaseType {
             CT::Upper,
             CT::Title,
             CT::Sentence,
-            CT::Alternating,
-            CT::Toggle,
             CT::None,
         ]
     }
@@ -86,8 +82,6 @@ impl CaseType {
             CT::Upper => stringify!(Upper),
             CT::Title => stringify!(Title),
             CT::Sentence => stringify!(Sentence),
-            CT::Alternating => stringify!(Alternating),
-            CT::Toggle => stringify!(Toggle),
             CT::None => stringify!(None),
         }
     }
@@ -120,8 +114,8 @@ impl AsRef<str> for CaseType {
 
 impl From<convert_case::Case<'_>> for CaseType {
     fn from(value: convert_case::Case) -> Self {
-        use convert_case::Case as C;
         use CaseType as CT;
+        use convert_case::Case as C;
         match value {
             C::Snake => CT::Snake,
             C::Constant => CT::Constant,
@@ -140,8 +134,6 @@ impl From<convert_case::Case<'_>> for CaseType {
             C::Upper => CT::Upper,
             C::Title => CT::Title,
             C::Sentence => CT::Sentence,
-            C::Alternating => CT::Alternating,
-            C::Toggle => CT::Toggle,
             _ => CT::None,
         }
     }
@@ -149,8 +141,8 @@ impl From<convert_case::Case<'_>> for CaseType {
 
 impl From<CaseType> for convert_case::Case<'_> {
     fn from(value: CaseType) -> Self {
-        use convert_case::Case as C;
         use CaseType as CT;
+        use convert_case::Case as C;
         match value {
             CT::Snake => C::Snake,
             CT::Constant => C::Constant,
@@ -169,12 +161,10 @@ impl From<CaseType> for convert_case::Case<'_> {
             CT::Upper => C::Upper,
             CT::Title => C::Title,
             CT::Sentence => C::Sentence,
-            CT::Alternating => C::Alternating,
-            CT::Toggle => C::Toggle,
             CT::None => C::Custom {
                 boundaries: &[],
-                pattern: convert_case::pattern::noop,
-                delim: "",
+                pattern: convert_case::Pattern::Custom(noop),
+                delimiter: "",
             },
         }
     }
@@ -220,3 +210,7 @@ impl std::fmt::Display for CaseTypeError {
 }
 
 impl std::error::Error for CaseTypeError {}
+
+fn noop(words: &[&str]) -> Vec<String> {
+    words.iter().map(|word| (*word).to_owned()).collect()
+}
