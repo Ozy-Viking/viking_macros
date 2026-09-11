@@ -1,11 +1,13 @@
-use viking_macros::EnumVec;
+use viking_macros::EnumAsStr;
 
 fn main() {
-    println!("{:?}", Test::all_variants())
+    println!("{}", Test::RosePine.as_str())
 }
 
-#[derive(Debug, EnumVec)]
+#[derive(Debug, EnumAsStr)]
+#[Kebab]
 enum Test {
-    Compleded,
-    NoTested,
+    Catppuccin,
+    TokyoNight,
+    RosePine,
 }

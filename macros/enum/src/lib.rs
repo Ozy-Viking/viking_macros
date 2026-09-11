@@ -191,3 +191,148 @@ pub fn derive_enum_vec(input: TokenStream) -> TokenStream {
     };
     quoted.into()
 }
+
+/// Adds an `as_str` method to an enum, returning the variant name as a
+/// `&'static str`.
+///
+/// String conversion can be applied to the enum as a whole and overridden on
+/// individual variants using the supported case-conversion attributes.
+///
+/// This derive only supports unit variants.
+///
+/// # Example
+///
+/// ```rust
+/// # use viking_macros_enum::EnumAsStr;
+/// #[derive(EnumAsStr)]
+/// #[Snake]
+/// enum Color {
+///     Primary,
+///     Secondary,
+///     ErrorBackground,
+/// }
+///
+/// assert_eq!(Color::Primary.as_str(), "primary");
+/// assert_eq!(Color::Secondary.as_str(), "secondary");
+/// assert_eq!(Color::ErrorBackground.as_str(), "error_background");
+/// ```
+///
+/// This generates an implementation equivalent to:
+///
+/// ```rust
+/// # enum Color {
+/// #     Primary,
+/// #     Secondary,
+/// #     ErrorBackground,
+/// # }
+/// impl Color {
+///     pub const fn as_str(&self) -> &'static str {
+///         match self {
+///             Self::Primary => "primary",
+///             Self::Secondary => "secondary",
+///             Self::ErrorBackground => "error_background",
+///         }
+///     }
+/// }
+/// ```
+///
+/// # Variant overrides
+///
+/// A variant can override the case conversion applied to the enum:
+///
+/// ```rust
+/// # use viking_macros_enum::EnumAsStr;
+/// #[derive(EnumAsStr)]
+/// #[Snake]
+/// enum Color {
+///     Primary,
+///
+///     #[Kebab]
+///     ErrorBackground,
+///
+///     #[None]
+///     KeepMeExactly,
+/// }
+///
+/// assert_eq!(Color::Primary.as_str(), "primary");
+/// assert_eq!(Color::ErrorBackground.as_str(), "error-background");
+/// assert_eq!(Color::KeepMeExactly.as_str(), "KeepMeExactly");
+/// ```
+///
+/// See [`convert_case::Case`] for details on the supported case conversions.
+#[proc_macro_derive(
+    EnumAsStr,
+    attributes(
+        Snake,
+        Constant,
+        UpperSnake,
+        Ada,
+        Kebab,
+        Cobol,
+        UpperKebab,
+        Train,
+        Flat,
+        UpperFlat,
+        Pascal,
+        UpperCamel,
+        Camel,
+        Lower,
+        Upper,
+        Title,
+        Sentence,
+        Alternating,
+        Toggle,
+        None
+    )
+)]
+pub fn derive_enum_as_str(input: TokenStream) -> TokenStream {
+    let input = parse_macro_input!(input as DeriveInput);
+
+    let DeriveInput {
+        ident, data, attrs, ..
+    } = input.clone();
+
+    let transform = CaseType::from_attributes(attrs);
+
+    let enum_data = match data {
+        syn::Data::Enum(data_enum) => data_enum,
+        _ => {
+            return token_stream_error(input.span(), "Must be an enum.");
+        }
+    };
+
+    let mut enum_items = Vec::new();
+
+    for variant in enum_data.variants {
+        if variant.fields != Fields::Unit {
+            return token_stream_error(variant.span(), "EnumAsStr only supports unit variants.");
+        }
+
+        let variant_transform = CaseType::from_attributes(variant.attrs);
+        let variant_ident = &variant.ident;
+
+        let value = if let Some(case) = variant_transform {
+            variant_ident.to_string().to_case(case.into())
+        } else if let Some(case) = transform {
+            variant_ident.to_string().to_case(case.into())
+        } else {
+            variant_ident.to_string()
+        };
+
+        enum_items.push(quote! {
+            Self::#variant_ident => #value
+        });
+    }
+
+    quote! {
+        #[automatically_derived]
+        impl #ident {
+            pub const fn as_str(&self) -> &'static str {
+                match self {
+                    #(#enum_items),*
+                }
+            }
+        }
+    }
+    .into()
+}

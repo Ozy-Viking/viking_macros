@@ -1,4 +1,5 @@
 #![doc = include_str!("../README.md")]
 
+pub use viking_macros_enum::EnumAsStr;
 pub use viking_macros_enum::EnumDisplay;
 pub use viking_macros_enum::EnumVec;
