@@ -62,26 +62,8 @@ mod convert_string;
 #[proc_macro_derive(
     EnumDisplay,
     attributes(
-        Snake,
-        Constant,
-        UpperSnake,
-        Ada,
-        Kebab,
-        Cobol,
-        UpperKebab,
-        Train,
-        Flat,
-        UpperFlat,
-        Pascal,
-        UpperCamel,
-        Camel,
-        Lower,
-        Upper,
-        Title,
-        Sentence,
-        Alternating,
-        Toggle,
-        None
+        Snake, Constant, UpperSnake, Ada, Kebab, Cobol, UpperKebab, Train, Flat, UpperFlat, Pascal,
+        UpperCamel, Camel, Lower, Upper, Title, Sentence, None
     )
 )]
 pub fn derive_enum_display(input: TokenStream) -> TokenStream {
@@ -131,28 +113,40 @@ fn token_stream_error(span: Span, msg: &'static str) -> TokenStream {
     TokenStream::from(syn::Error::new(span, msg).into_compile_error())
 }
 
-/// Puts all variants in a [Vec].
+/// Puts all variants in a [`Vec`].
 ///
-/// ```no_run
-/// #[derive(EnumVec)]
-/// enum Test {
-///     Compleded,
-///     NoTested,
+/// This derive only supports unit variants.
+///
+/// # Example
+///
+/// ```rust
+/// # use viking_macros_enum::EnumVec;
+/// #[derive(Debug, PartialEq, EnumVec)]
+/// enum Status {
+///     Ready,
+///     Running,
+///     Done,
 /// }
+///
+/// assert_eq!(
+///     Status::all_variants(),
+///     vec![Status::Ready, Status::Running, Status::Done]
+/// );
 /// ```
 ///
-/// Will generate:
+/// This generates an implementation equivalent to:
 ///
-/// ```no_run
-/// enum Test {
-///     Compleded,
-///     NoTested,
-/// }
-///
-/// impl Test {
-///    fn all_variants() -> Vec<Self> {
-///            vec![Test::Compleded, Test::NoTested];
-///    }
+/// ```rust
+/// # #[derive(Debug, PartialEq)]
+/// # enum Status {
+/// #     Ready,
+/// #     Running,
+/// #     Done,
+/// # }
+/// impl Status {
+///     fn all_variants() -> Vec<Self> {
+///         vec![Status::Ready, Status::Running, Status::Done]
+///     }
 /// }
 /// ```
 ///
@@ -263,26 +257,8 @@ pub fn derive_enum_vec(input: TokenStream) -> TokenStream {
 #[proc_macro_derive(
     EnumAsStr,
     attributes(
-        Snake,
-        Constant,
-        UpperSnake,
-        Ada,
-        Kebab,
-        Cobol,
-        UpperKebab,
-        Train,
-        Flat,
-        UpperFlat,
-        Pascal,
-        UpperCamel,
-        Camel,
-        Lower,
-        Upper,
-        Title,
-        Sentence,
-        Alternating,
-        Toggle,
-        None
+        Snake, Constant, UpperSnake, Ada, Kebab, Cobol, UpperKebab, Train, Flat, UpperFlat, Pascal,
+        UpperCamel, Camel, Lower, Upper, Title, Sentence, None
     )
 )]
 pub fn derive_enum_as_str(input: TokenStream) -> TokenStream {

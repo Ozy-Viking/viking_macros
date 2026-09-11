@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use viking_macros::EnumAsStr;
 
 fn main() {
