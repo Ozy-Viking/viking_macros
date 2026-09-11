@@ -1,7 +1,9 @@
 # Changelog
 
-<a name="Upcoming Changes"></a>
-## [Upcoming Changes]
+
+<a name="0.3.6"></a>
+## [0.3.6] - 2026-09-11
+
 ### Bug Fixes
 - Added testing for all macros
 - Remove invalid test cases
@@ -79,7 +81,8 @@
 - Add .gitignore
 
 
-[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.5...HEAD
+[Upcoming Changes]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.6...HEAD
+[0.3.6]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.5...0.3.6
 [0.3.5]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.4...0.3.5
 [0.3.4]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.3...0.3.4
 [0.3.3]: https://github.com/Ozy-Viking/viking_macros/compare/0.3.2...0.3.3
