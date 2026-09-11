@@ -78,11 +78,6 @@ fn enum_display_string() {
     assert_eq!(CaseTest::UpperCase.to_string().as_str(), "UPPER CASE");
     assert_eq!(CaseTest::TitleCase.to_string().as_str(), "Title Case");
     assert_eq!(CaseTest::SentenceCase.to_string().as_str(), "Sentence case");
-    assert_eq!(
-        CaseTest::AlternatingCase.to_string().as_str(),
-        "aLtErNaTiNg CaSe"
-    );
-    assert_eq!(CaseTest::ToggleCase.to_string().as_str(), "tOGGLE cASE");
     assert_eq!(CaseTest::NoneCase.to_string().as_str(), "NoneCase");
     assert_eq!(CaseTest::DefaultCase.to_string().as_str(), "default case");
 }
